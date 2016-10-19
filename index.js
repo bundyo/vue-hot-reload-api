@@ -93,7 +93,12 @@ function tryWrap (fn) {
 
 function forceUpdate(instance, options) {
   instance.$forceUpdate()
-  var data = options.data()
+  if (!options.data) {
+    return
+  }
+  if (typeof options.data === "function") {
+    var data = options.data()
+  }
   Object.keys(data).forEach(function (key) {
     if (data[key] != instance[key]) {
       instance.$set(instance, key, data[key])
