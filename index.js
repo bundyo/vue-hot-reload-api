@@ -109,7 +109,7 @@ exports.rerender = tryWrap(function (id, fns) {
     instance.$options.render = fns.render
     instance.$options.staticRenderFns = fns.staticRenderFns
     instance._staticTrees = [] // reset static trees
-    forceUpdate(instance)
+    forceUpdate(instance, fns)
   })
 })
 
@@ -126,7 +126,7 @@ exports.reload = tryWrap(function (id, options) {
   }
   record.instances.slice().forEach(function (instance) {
     if (instance.$parent) {
-      forceUpdate(instance.$parent)
+      forceUpdate(instance.$parent, options)
     } else {
       console.warn('Root or manually mounted instance modified. Full reload required.')
     }
