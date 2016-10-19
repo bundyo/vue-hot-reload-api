@@ -91,6 +91,16 @@ function tryWrap (fn) {
   }
 }
 
+function forceUpdate(instance, options) {
+  instance.$forceUpdate()
+  var data = options.data()
+  Object.keys(data).forEach(function (key) {
+    if (data[key] != instance[key]) {
+      instance.$set(instance, key, data[key])
+    }
+  })
+}
+
 exports.rerender = tryWrap(function (id, fns) {
   var record = map[id]
   record.Ctor.options.render = fns.render
@@ -99,7 +109,7 @@ exports.rerender = tryWrap(function (id, fns) {
     instance.$options.render = fns.render
     instance.$options.staticRenderFns = fns.staticRenderFns
     instance._staticTrees = [] // reset static trees
-    instance.$forceUpdate()
+    forceUpdate(instance)
   })
 })
 
@@ -116,7 +126,7 @@ exports.reload = tryWrap(function (id, options) {
   }
   record.instances.slice().forEach(function (instance) {
     if (instance.$parent) {
-      instance.$parent.$forceUpdate()
+      forceUpdate(instance.$parent)
     } else {
       console.warn('Root or manually mounted instance modified. Full reload required.')
     }
